@@ -1,6 +1,6 @@
 import argparse
 import json
-import os.path
+import gendiff.util as util
 
 
 def main():
@@ -13,12 +13,13 @@ def main():
         help='set format of output'
     )
     args = parser.parse_args()
-    gen_diff(args.first_file, args.second_file)
+    gen_diff_result = gen_diff(args.first_file, args.second_file)
+    print(gen_diff_result)
 
 
 def gen_diff(path_to_file1, path_to_file2):
-    file1 = normalize_path(path_to_file1)
-    file2 = normalize_path(path_to_file2)
+    file1 = util.normalize_path(path_to_file1)
+    file2 = util.normalize_path(path_to_file2)
     data1 = json.load(open(file1))
     data2 = json.load(open(file2))
     space = "    "
@@ -40,11 +41,7 @@ def gen_diff(path_to_file1, path_to_file2):
             slag += space + '+ ' + key + ': ' + str(data2[key]) + '\n'
         result += slag
     result += '}'
-    print(result)
-
-
-def normalize_path(path_to_file):
-    return os.path.abspath(path_to_file)
+    return result
 
 
 if __name__ == "__main__":
