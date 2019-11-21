@@ -5,3 +5,5 @@
 [![Build Status](https://travis-ci.org/ShafigullinIK/python-project-lvl2.svg?branch=master)](https://travis-ci.org/ShafigullinIK/python-project-lvl2)
 
 [![asciicast](https://asciinema.org/a/PhbK5tosNq0CQOWk2ld4E3IEv.svg)](https://asciinema.org/a/PhbK5tosNq0CQOWk2ld4E3IEv)
+
+[![asciicast](https://asciinema.org/a/nJHvmQeLftkAQZCHanE6nD782.svg)](https://asciinema.org/a/nJHvmQeLftkAQZCHanE6nD782)
