@@ -3,11 +3,11 @@ from gendiff.scripts.gendiff import gen_diff
 
 
 def test_gen_dif():
-    test_with_type('json')
-    test_with_type('yml')
+    with_type('json')
+    with_type('yml')
 
 
-def test_with_type(file_type):
+def with_type(file_type):
     path_to_file1 = normalize_path(
         'gendiff/tests/fixtures/test_before.{}'.format(file_type)
         )
