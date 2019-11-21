@@ -1,10 +1,9 @@
-import json
-import gendiff.util as util
+from gendiff.util import load_from_json_file
 
 
 def gen_diff(path_to_file1, path_to_file2):
-    data1 = json.load(open(util.normalize_path(path_to_file1)))
-    data2 = json.load(open(util.normalize_path(path_to_file2)))
+    data1 = load_from_json_file(path_to_file1)
+    data2 = load_from_json_file(path_to_file2)
     space = "    "
     result = "{" + '\n'
     for key in data1:
