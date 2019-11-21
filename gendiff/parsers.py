@@ -1,9 +1,9 @@
-from gendiff.util import load_from_json_file
+from gendiff.util import load_from_file
 
 
 def gen_diff(path_to_file1, path_to_file2):
-    data1 = load_from_json_file(path_to_file1)
-    data2 = load_from_json_file(path_to_file2)
+    data1 = load_from_file(path_to_file1)
+    data2 = load_from_file(path_to_file2)
     result = "{" + '\n'
     result += parse_before(data1, data2)
     result += parse_after(data1, data2)
@@ -17,7 +17,7 @@ def parse_before(data1, data2):
         slag = ''
         if key in data2:
             if data1[key] == data2[key]:
-                slag += "    {}: {}\n".format(key, str(data1[key]))
+                slag += "      {}: {}\n".format(key, str(data1[key]))
             else:
                 slag += "    - {}: {}\n".format(key, str(data1[key]))
                 slag += "    + {}: {}\n".format(key, str(data2[key]))
