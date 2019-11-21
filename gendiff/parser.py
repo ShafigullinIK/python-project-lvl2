@@ -17,12 +17,12 @@ def parse_before(data1, data2):
         slag = ''
         if key in data2:
             if data1[key] == data2[key]:
-                slag += "    {}: {} \n".format(key, str(data1[key]))
+                slag += "    {}: {}\n".format(key, str(data1[key]))
             else:
-                slag += "    - {}: {} \n".format(key, str(data1[key]))
-                slag += "    + {}: {} \n".format(key, str(data2[key]))
+                slag += "    - {}: {}\n".format(key, str(data1[key]))
+                slag += "    + {}: {}\n".format(key, str(data2[key]))
         else:
-            slag += "    - {}: {} \n".format(key, str(data1[key]))
+            slag += "    - {}: {}\n".format(key, str(data1[key]))
         result += slag
     return result
 
@@ -32,6 +32,6 @@ def parse_after(data1, data2):
     for key in data2:
         slag = ''
         if key not in data1:
-            slag += "    + {}: {} \n".format(key, str(data2[key]))
+            slag += "    + {}: {}\n".format(key, str(data2[key]))
         result += slag
     return result
