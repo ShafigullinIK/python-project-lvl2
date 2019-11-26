@@ -2,6 +2,9 @@ dist/
 *.egg-info
 __pycache__
 .vscode/
-*.json
+before.json
+after.json
+before1.json
+after1.json
 *.yml
 Archive/
