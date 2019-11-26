@@ -10,6 +10,7 @@ gendiff = "gendiff.scripts.gendiff:main"
 
 [tool.poetry.dependencies]
 python = "^3.6"
+PyYAML = "^5.1"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
