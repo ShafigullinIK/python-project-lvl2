@@ -2,6 +2,7 @@ from gendiff.util import load_from_file
 from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
 from gendiff.formatters.plain import render_plain
 from gendiff.formatters.default import render
+from gendiff.formatters.json import render_json
 
 
 def gen_diff(path_to_file1, path_to_file2, formatter):
@@ -10,6 +11,8 @@ def gen_diff(path_to_file1, path_to_file2, formatter):
     result = iter(data1, data2)
     if formatter == 'plain':
         return render_plain(result)
+    elif formatter == 'json':
+        return render_json(result)
     else:
         return render(result)
 
