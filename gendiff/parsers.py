@@ -1,17 +1,17 @@
 from gendiff.util import load_from_file
+from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
+from gendiff.formatters.plain import render_plain
+from gendiff.formatters.json import render
 
 
-DELETED = ' deleted '
-ADDED = ' added '
-CHANGED = ' changed '
-DEVIDER = "~|~"
-
-
-def gen_diff(path_to_file1, path_to_file2):
+def gen_diff(path_to_file1, path_to_file2, formatter):
     data1 = load_from_file(path_to_file1)
     data2 = load_from_file(path_to_file2)
     result = iter(data1, data2)
-    return render(result)
+    if formatter == 'plain':
+        return render_plain(result)
+    else:
+        return render(result)
 
 
 def iter(data1, data2):
@@ -28,51 +28,3 @@ def iter(data1, data2):
     for key in data2.keys() - data1.keys():
         d[ADDED + key] = data2[key]
     return d
-
-
-def render(data):
-    return render_rec(data, '')
-
-
-def render_rec(data, indent):
-    result = "{" + '\n'
-    for raw_key in data:
-        key1 = ''
-        key2 = ''
-        if raw_key.find(DELETED) == 0:
-            key1 = '- ' + raw_key[len(DELETED):]
-        elif raw_key.find(ADDED) == 0:
-            key1 = '+ ' + raw_key[len(ADDED):]
-        elif raw_key.find(CHANGED) == 0:
-            key1 = '- ' + raw_key[len(CHANGED):]
-            key2 = '+ ' + raw_key[len(CHANGED):]
-        if key1 == '':
-            if isinstance(data[raw_key], dict):
-                new_indent = '      ' + indent
-                result += new_indent + raw_key + ': ' +\
-                    render_rec(data[raw_key], new_indent)
-            else:
-                result += indent +\
-                    "      {}: {}\n".format(raw_key, str(data[raw_key]))
-        elif key2 == '':
-            if isinstance(data[raw_key], dict):
-                new_indent = '    ' + indent
-                result += new_indent + key1 +\
-                    ': ' + render_rec(data[raw_key], new_indent)
-            else:
-                result += indent +\
-                    "    {}: {}\n".format(key1, str(data[raw_key]))
-        else:
-            if isinstance(data[raw_key], dict):
-                new_indent = '    ' + indent
-                result += new_indent + key1 +\
-                    ': ' + render_rec(data[raw_key], new_indent)
-                result += new_indent + key2 +\
-                    ': ' + render_rec(data[raw_key], new_indent)
-            else:
-                first_value = str(data[raw_key]).split(DEVIDER)[0]
-                second_value = str(data[raw_key]).split(DEVIDER)[1]
-                result += indent + "    {}: {}\n".format(key1, first_value)
-                result += indent + "    {}: {}\n".format(key2, second_value)
-    result += indent + '}' + '\n'
-    return result

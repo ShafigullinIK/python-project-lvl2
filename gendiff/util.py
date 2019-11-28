@@ -3,6 +3,12 @@ import json
 import yaml
 
 
+DELETED = ' deleted '
+ADDED = '  added  '
+CHANGED = ' changed '
+DEVIDER = "~|~"
+
+
 def normalize_path(path_to_file):
     return os.path.abspath(path_to_file)
 

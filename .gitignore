@@ -6,5 +6,6 @@ before.json
 after.json
 before1.json
 after1.json
-*.yml
+before.yml
+after.yml
 Archive/
