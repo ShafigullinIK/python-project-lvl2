@@ -1,7 +1,7 @@
 from gendiff.util import load_from_file
 from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
 from gendiff.formatters.plain import render_plain
-from gendiff.formatters.json import render
+from gendiff.formatters.default import render
 
 
 def gen_diff(path_to_file1, path_to_file2, formatter):

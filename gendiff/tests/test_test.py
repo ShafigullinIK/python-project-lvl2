@@ -19,7 +19,7 @@ def with_type(file_type):
     if(file_type[0] == '4'):
         gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'plain')
     else:
-        gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'json')
+        gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'default')
     f = open('gendiff/tests/fixtures/test_result_{}.txt'.format(file_type[0]))
     for line in f:
         assert gen_dif_result.find(line) >= 0
