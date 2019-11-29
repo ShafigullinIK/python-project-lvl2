@@ -1,7 +1,7 @@
 from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
 
 
-def render(data):
+def render_default(data):
     return render_rec(data, '')
 
 
