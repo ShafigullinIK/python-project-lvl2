@@ -17,8 +17,10 @@ def with_type(file_type):
     path_to_file2 = normalize_path(
         'gendiff/tests/fixtures/test_after{}'.format(file_type)
         )
-    if(file_type[0] == '4'):
+    if file_type[0] == '4':
         gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'plain')
+    elif file_type[0] == '5':
+        gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'json')
     else:
         gen_dif_result = gen_diff(path_to_file1, path_to_file2, 'default')
     f = open('gendiff/tests/fixtures/test_result_{}.txt'.format(file_type[0]))
