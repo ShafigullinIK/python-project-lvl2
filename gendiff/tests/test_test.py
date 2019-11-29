@@ -7,6 +7,7 @@ def test_gen_dif():
     with_type('2.json')
     with_type('3.yml')
     with_type('4.json')
+    with_type('5.json')
 
 
 def with_type(file_type):

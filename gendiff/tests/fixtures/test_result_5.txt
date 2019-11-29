@@ -1,0 +1,15 @@
+{
+  "-": [
+    "common.setting6",
+    "common.setting2",
+    "group2"
+  ],
+  "+": [
+    "common.setting5",
+    "common.setting4",
+    "group3"
+  ],
+  "+/-": [
+    "group1.baz"
+  ]
+}
