@@ -1,16 +1,12 @@
 from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
 
 
-plain_result = ''
-
-
 def render_plain(data):
-    render_plain_rec(data, "")
+    plain_result = render_plain_rec(data, "", '')
     return plain_result
 
 
-def render_plain_rec(data, string):
-    global plain_result
+def render_plain_rec(data, string, plain_result):
     for raw_key in data:
         if raw_key.find(DELETED) == 0:
             plain_result += "Property '{}' was removed\n".format(
@@ -31,9 +27,10 @@ def render_plain_rec(data, string):
                 )
         elif raw_key.find(CHANGED) == 0:
             if isinstance(data[raw_key], dict):
-                render_plain_rec(
+                plain_result = render_plain_rec(
                     data[raw_key],
-                    string + raw_key[len(CHANGED):] + '.'
+                    string + raw_key[len(CHANGED):] + '.',
+                    plain_result
                 )
             else:
                 plain_result += "Property '{}' was changed.\
@@ -44,7 +41,9 @@ def render_plain_rec(data, string):
                 )
         else:
             if isinstance(data[raw_key], dict):
-                render_plain_rec(
+                plain_result = render_plain_rec(
                     data[raw_key],
-                    string + str(raw_key) + '.'
+                    string + str(raw_key) + '.',
+                    plain_result
                 )
+    return plain_result
