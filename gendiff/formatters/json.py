@@ -35,7 +35,9 @@ def prepare_dict_rec(data, string, d):
                     d
                 )
             else:
-                d['+/-'].append(string + raw_key[len(CHANGED):])
+                d['+/-'].append(
+                    "{}{}".format(string, raw_key[len(CHANGED):])
+                )
         else:
             if isinstance(data[raw_key], dict):
                 d = prepare_dict_rec(

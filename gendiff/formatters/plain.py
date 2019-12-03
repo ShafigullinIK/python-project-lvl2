@@ -9,8 +9,8 @@ def render_plain(data):
 def render_plain_rec(data, string, accum):
     for raw_key in data:
         if raw_key.find(DELETED) == 0:
-            accum.append("Property '{}' was removed".format(
-                string + raw_key[len(DELETED):]
+            accum.append("Property '{}{}' was removed".format(
+                string, raw_key[len(DELETED):]
                 )
             )
         elif raw_key.find(ADDED) == 0:
