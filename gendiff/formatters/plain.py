@@ -2,48 +2,55 @@ from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
 
 
 def render_plain(data):
-    plain_result = render_plain_rec(data, "", '')
-    return plain_result
+    accum = render_plain_rec(data, "", [])
+    return "\n".join(accum)
 
 
-def render_plain_rec(data, string, plain_result):
+def render_plain_rec(data, string, accum):
     for raw_key in data:
         if raw_key.find(DELETED) == 0:
-            plain_result += "Property '{}' was removed\n".format(
+            accum.append("Property '{}' was removed".format(
                 string + raw_key[len(DELETED):]
                 )
+            )
         elif raw_key.find(ADDED) == 0:
             if isinstance(data[raw_key], dict):
-                plain_result += "Property '{}' was added with value\
- '{}'\n".format(
-                    string + raw_key[len(ADDED):],
-                    'complex value'
+                accum.append(
+                    "Property '{}{}' was added with value '{}'".format(
+                        string,
+                        raw_key[len(ADDED):],
+                        'complex value'
+                    )
                 )
             else:
-                plain_result += "Property '{}' was added\
- with value '{}'\n".format(
-                    string + raw_key[len(ADDED):],
-                    data[raw_key]
+                accum.append(
+                    "Property '{}{}' was added with value '{}'".format(
+                        string,
+                        raw_key[len(ADDED):],
+                        data[raw_key]
+                    )
                 )
         elif raw_key.find(CHANGED) == 0:
             if isinstance(data[raw_key], dict):
-                plain_result = render_plain_rec(
+                accum = render_plain_rec(
                     data[raw_key],
-                    string + raw_key[len(CHANGED):] + '.',
-                    plain_result
+                    "{}{}.".format(string, raw_key[len(CHANGED):]),
+                    accum
                 )
             else:
-                plain_result += "Property '{}' was changed.\
- From '{}' to '{}'\n".format(
-                    string + raw_key[len(CHANGED):],
-                    str(data[raw_key]).split(DEVIDER)[0],
-                    str(data[raw_key]).split(DEVIDER)[1]
+                accum.append(
+                    "Property '{}{}' was changed. From '{}' to '{}'".format(
+                        string,
+                        raw_key[len(CHANGED):],
+                        str(data[raw_key]).split(DEVIDER)[0],
+                        str(data[raw_key]).split(DEVIDER)[1]
+                    )
                 )
         else:
             if isinstance(data[raw_key], dict):
-                plain_result = render_plain_rec(
+                accum = render_plain_rec(
                     data[raw_key],
-                    string + str(raw_key) + '.',
-                    plain_result
+                    "{}{}.".format(string, str(raw_key)),
+                    accum
                 )
-    return plain_result
+    return accum

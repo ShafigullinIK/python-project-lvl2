@@ -28,7 +28,10 @@ def prepare_dict_rec(data, string, d):
             if isinstance(data[raw_key], dict):
                 d = prepare_dict_rec(
                     data[raw_key],
-                    string + raw_key[len(CHANGED):] + '.',
+                    "{}{}.".format(
+                        string,
+                        raw_key[len(CHANGED):]
+                    ),
                     d
                 )
             else:
@@ -37,7 +40,10 @@ def prepare_dict_rec(data, string, d):
             if isinstance(data[raw_key], dict):
                 d = prepare_dict_rec(
                     data[raw_key],
-                    string + str(raw_key) + '.',
+                    "{}{}.".format(
+                        string,
+                        str(raw_key)
+                    ),
                     d
                 )
     return d
