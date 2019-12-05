@@ -3,32 +3,29 @@ import json
 
 
 def render_json(data):
-    dict_result = prepare_dict(data)
+    dict_result = prepare_dict_rec(data)
     result = ''
     result = json.dumps(dict_result, indent=2)
     return result
 
 
-def prepare_dict(data):
-    return prepare_dict_rec(data, "", {
+def prepare_dict_rec(data, string="", d={
         '-': [],
         '+': [],
-        '+/-': []
-        }
-    )
-
-
-def prepare_dict_rec(data, string, d):
+        '+/-': [],
+        '=': []
+        }):
     for raw_key in data:
         (pref, key) = raw_key
+        inner = data[raw_key]
         if pref == DELETED:
             d['-'].append(string + key)
         elif pref == ADDED:
             d['+'].append(string + key)
         elif pref == CHANGED:
-            if isinstance(data[raw_key], dict):
+            if 'value' not in inner:
                 d = prepare_dict_rec(
-                    data[raw_key],
+                    inner,
                     "{}{}.".format(
                         string,
                         key
@@ -40,13 +37,20 @@ def prepare_dict_rec(data, string, d):
                     "{}{}".format(string, key)
                 )
         elif pref == NORMAL:
-            if isinstance(data[raw_key], dict):
+            if 'value' not in inner:
                 d = prepare_dict_rec(
-                    data[raw_key],
+                    inner,
                     "{}{}.".format(
                         string,
                         key
                     ),
                     d
+                )
+            else:
+                d['='].append(
+                    "{}{}".format(
+                        string,
+                        key
+                    )
                 )
     return d

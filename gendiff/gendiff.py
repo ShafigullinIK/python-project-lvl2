@@ -3,16 +3,11 @@ from gendiff.formatters.json import render_json
 from gendiff.formatters.plain import render_plain
 from gendiff.parsers import prepare_data
 from gendiff.util import load_from_file
+from gendiff.cli import init_argparser
 
 
-def gendiff(parser):
-    parser.add_argument('first_file', type=str, help='First file name')
-    parser.add_argument('second_file', type=str, help='second file name')
-    parser.add_argument(
-        '-f', '--format',
-        type=str,
-        help='set format of output'
-    )
+def gendiff():
+    parser = init_argparser()
     args = parser.parse_args()
     gen_diff_result = gen_diff(
         args.first_file,

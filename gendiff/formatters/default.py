@@ -17,19 +17,33 @@ def render_rec(data, indent, accum, level=1):
             (pref, key) = raw_key
         else:
             key = raw_key
-        if isinstance(data[raw_key], dict):
+        inner = data[raw_key]
+        if 'value' in inner:
+            if pref in (NORMAL, DELETED, ADDED):
+                accum.append("{}    {}{}: {}".format(
+                    indent, pref, key, inner['value']
+                ))
+            elif pref == CHANGED:
+                (before, after) = inner['value']
+                accum.append("{}    - {}: {}".format(
+                    indent, key, before
+                ))
+                accum.append("{}    + {}: {}".format(
+                    indent, key, after
+                ))
+        else:
             if pref in (NORMAL, DELETED, ADDED):
                 accum = add(
                     accum,
                     INDENT*level,
                     pref,
                     key,
-                    data[raw_key],
+                    inner,
                     render_rec,
                     level
                     )
             elif pref == CHANGED:
-                (before, after) = data[raw_key]
+                (before, after) = inner
                 accum = add(
                     accum,
                     INDENT*level,
@@ -47,19 +61,6 @@ def render_rec(data, indent, accum, level=1):
                     after,
                     render_rec, level
                     )
-        else:
-            if pref in (NORMAL, DELETED, ADDED):
-                accum.append("{}    {}{}: {}".format(
-                    indent, pref, key, str(data[raw_key])
-                ))
-            elif pref == CHANGED:
-                (before, after) = data[raw_key]
-                accum.append("{}    - {}: {}".format(
-                    indent, key, before
-                ))
-                accum.append("{}    + {}: {}".format(
-                    indent, key, after
-                ))
     last_indent = INDENT*(level - 1)
     if level > 1:
         last_indent = "  {}".format(last_indent)

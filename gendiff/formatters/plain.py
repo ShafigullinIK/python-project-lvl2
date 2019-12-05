@@ -9,13 +9,14 @@ def render_plain(data):
 def render_plain_rec(data, string, accum):
     for raw_key in data:
         (pref, key) = raw_key
+        inner = data[raw_key]
         if pref == DELETED:
             accum.append("Property '{}{}' was removed".format(
                 string, key
                 )
             )
         elif pref == ADDED:
-            if isinstance(data[raw_key], dict):
+            if 'value' not in inner:
                 accum.append(
                     "Property '{}{}' was added with value '{}'".format(
                         string,
@@ -28,18 +29,18 @@ def render_plain_rec(data, string, accum):
                     "Property '{}{}' was added with value '{}'".format(
                         string,
                         key,
-                        data[raw_key]
+                        inner['value']
                     )
                 )
         elif pref == CHANGED:
-            if isinstance(data[raw_key], dict):
+            if 'value' not in inner:
                 accum = render_plain_rec(
-                    data[raw_key],
+                    inner,
                     "{}{}.".format(string, key),
                     accum
                 )
             else:
-                (before, after) = data[raw_key]
+                (before, after) = inner['value']
                 accum.append(
                     "Property '{}{}' was changed. From '{}' to '{}'".format(
                         string,
@@ -49,9 +50,9 @@ def render_plain_rec(data, string, accum):
                     )
                 )
         elif pref == NORMAL:
-            if isinstance(data[raw_key], dict):
+            if 'value' not in inner:
                 accum = render_plain_rec(
-                    data[raw_key],
+                    inner,
                     "{}{}.".format(string, str(key)),
                     accum
                 )
