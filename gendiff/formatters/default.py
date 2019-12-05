@@ -1,4 +1,7 @@
-from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
+from gendiff.parsers import ADDED, CHANGED, DELETED, NORMAL
+
+
+INDENT = "    "
 
 
 def render_default(data):
@@ -7,67 +10,67 @@ def render_default(data):
     return result
 
 
-def render_rec(data, indent, accum):
+def render_rec(data, indent, accum, level=1):
     for raw_key in data:
-        key1 = ''
-        key2 = ''
-        if raw_key.find(DELETED) == 0:
-            key1 = '- {}'.format(raw_key[len(DELETED):])
-        elif raw_key.find(ADDED) == 0:
-            key1 = '+ {}'.format(raw_key[len(ADDED):])
-        elif raw_key.find(CHANGED) == 0:
-            key1 = '- {}'.format(raw_key[len(CHANGED):])
-            key2 = '+ {}'.format(raw_key[len(CHANGED):])
-        if key1 == '':
-            if isinstance(data[raw_key], dict):
-                new_indent = '      {}'.format(indent)
-                accum.append("{}{}: {}".format(
-                    new_indent, raw_key, "{"
-                    )
-                )
-                accum = render_rec(data[raw_key], new_indent, accum)
-            else:
-                accum.append("{}      {}: {}". format(
-                    indent, raw_key, str(data[raw_key])
-                    )
-                )
-        elif key2 == '':
-            if isinstance(data[raw_key], dict):
-                new_indent = '    {}'.format(indent)
-                accum.append("{}{}: {}".format(
-                    new_indent, key1, "{"
-                    )
-                )
-                accum = render_rec(data[raw_key], new_indent, accum)
-            else:
-                accum.append("{}    {}: {}".format(
-                    indent, key1, str(data[raw_key])
-                ))
+        pref = NORMAL
+        if isinstance(raw_key, tuple):
+            (pref, key) = raw_key
         else:
-            if isinstance(data[raw_key], dict):
-                new_indent = '    {}'.format(indent)
-                accum.append("{}{}: {}". format(
-                    new_indent, key1, "{"
-                ))
-                accum = render_rec(data[raw_key], new_indent, accum)
-                accum.append("{}{}: {}". format(
-                    new_indent, key2, "{"
-                ))
-                accum = render_rec(data[raw_key], new_indent, accum)
-            else:
-                first_value = str(data[raw_key]).split(DEVIDER)[0]
-                second_value = str(data[raw_key]).split(DEVIDER)[1]
-                accum.append("{}    {}: {}".format(
-                    indent,
-                    key1,
-                    first_value
+            key = raw_key
+        if isinstance(data[raw_key], dict):
+            if pref in (NORMAL, DELETED, ADDED):
+                accum = add(
+                    accum,
+                    INDENT*level,
+                    pref,
+                    key,
+                    data[raw_key],
+                    render_rec,
+                    level
                     )
-                )
-                accum.append("{}    {}: {}".format(
-                    indent,
-                    key2,
-                    second_value
+            elif pref == CHANGED:
+                (before, after) = data[raw_key]
+                accum = add(
+                    accum,
+                    INDENT*level,
+                    DELETED,
+                    key,
+                    before,
+                    render_rec,
+                    level
                     )
-                )
-    accum.append("{}{}".format(indent, "}"))
+                accum = add(
+                    accum,
+                    INDENT*level,
+                    ADDED,
+                    key,
+                    after,
+                    render_rec, level
+                    )
+        else:
+            if pref in (NORMAL, DELETED, ADDED):
+                accum.append("{}    {}{}: {}".format(
+                    indent, pref, key, str(data[raw_key])
+                ))
+            elif pref == CHANGED:
+                (before, after) = data[raw_key]
+                accum.append("{}    - {}: {}".format(
+                    indent, key, before
+                ))
+                accum.append("{}    + {}: {}".format(
+                    indent, key, after
+                ))
+    last_indent = INDENT*(level - 1)
+    if level > 1:
+        last_indent = "  {}".format(last_indent)
+    accum.append("{}{}".format(last_indent, "}"))
     return accum
+
+
+def add(accum, indent, sign, key, value, function, level):
+    accum.append(
+        "{}{}{}: {}".format(
+                    indent, sign, key, "{"
+                    )
+                )
+    return function(value, indent, accum, level+1)

@@ -1,5 +1,5 @@
 import argparse
-from gendiff.parsers import gendiff
+from gendiff.gendiff import gendiff
 
 
 def main():

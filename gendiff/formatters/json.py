@@ -1,4 +1,4 @@
-from gendiff.util import ADDED, CHANGED, DELETED
+from gendiff.parsers import ADDED, CHANGED, DELETED, NORMAL
 import json
 
 
@@ -20,31 +20,32 @@ def prepare_dict(data):
 
 def prepare_dict_rec(data, string, d):
     for raw_key in data:
-        if raw_key.find(DELETED) == 0:
-            d['-'].append(string + raw_key[len(DELETED):])
-        elif raw_key.find(ADDED) == 0:
-            d['+'].append(string + raw_key[len(ADDED):])
-        elif raw_key.find(CHANGED) == 0:
+        (pref, key) = raw_key
+        if pref == DELETED:
+            d['-'].append(string + key)
+        elif pref == ADDED:
+            d['+'].append(string + key)
+        elif pref == CHANGED:
             if isinstance(data[raw_key], dict):
                 d = prepare_dict_rec(
                     data[raw_key],
                     "{}{}.".format(
                         string,
-                        raw_key[len(CHANGED):]
+                        key
                     ),
                     d
                 )
             else:
                 d['+/-'].append(
-                    "{}{}".format(string, raw_key[len(CHANGED):])
+                    "{}{}".format(string, key)
                 )
-        else:
+        elif pref == NORMAL:
             if isinstance(data[raw_key], dict):
                 d = prepare_dict_rec(
                     data[raw_key],
                     "{}{}.".format(
                         string,
-                        str(raw_key)
+                        key
                     ),
                     d
                 )

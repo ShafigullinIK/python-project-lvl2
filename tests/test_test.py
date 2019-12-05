@@ -1,5 +1,5 @@
-from gendiff.util import normalize_path
-from gendiff.parsers import gen_diff
+from gendiff.gendiff import gen_diff
+import os.path
 
 
 def test_gen_dif():
@@ -11,10 +11,10 @@ def test_gen_dif():
 
 
 def with_type(file_type):
-    path_to_file1 = normalize_path(
+    path_to_file1 = os.path.abspath(
         'tests/fixtures/test_before{}'.format(file_type)
         )
-    path_to_file2 = normalize_path(
+    path_to_file2 = os.path.abspath(
         'tests/fixtures/test_after{}'.format(file_type)
         )
     if file_type[0] == '4':

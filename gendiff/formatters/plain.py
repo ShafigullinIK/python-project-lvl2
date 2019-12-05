@@ -1,4 +1,4 @@
-from gendiff.util import ADDED, CHANGED, DELETED, DEVIDER
+from gendiff.parsers import ADDED, CHANGED, DELETED, NORMAL
 
 
 def render_plain(data):
@@ -8,17 +8,18 @@ def render_plain(data):
 
 def render_plain_rec(data, string, accum):
     for raw_key in data:
-        if raw_key.find(DELETED) == 0:
+        (pref, key) = raw_key
+        if pref == DELETED:
             accum.append("Property '{}{}' was removed".format(
-                string, raw_key[len(DELETED):]
+                string, key
                 )
             )
-        elif raw_key.find(ADDED) == 0:
+        elif pref == ADDED:
             if isinstance(data[raw_key], dict):
                 accum.append(
                     "Property '{}{}' was added with value '{}'".format(
                         string,
-                        raw_key[len(ADDED):],
+                        key,
                         'complex value'
                     )
                 )
@@ -26,31 +27,32 @@ def render_plain_rec(data, string, accum):
                 accum.append(
                     "Property '{}{}' was added with value '{}'".format(
                         string,
-                        raw_key[len(ADDED):],
+                        key,
                         data[raw_key]
                     )
                 )
-        elif raw_key.find(CHANGED) == 0:
+        elif pref == CHANGED:
             if isinstance(data[raw_key], dict):
                 accum = render_plain_rec(
                     data[raw_key],
-                    "{}{}.".format(string, raw_key[len(CHANGED):]),
+                    "{}{}.".format(string, key),
                     accum
                 )
             else:
+                (before, after) = data[raw_key]
                 accum.append(
                     "Property '{}{}' was changed. From '{}' to '{}'".format(
                         string,
-                        raw_key[len(CHANGED):],
-                        str(data[raw_key]).split(DEVIDER)[0],
-                        str(data[raw_key]).split(DEVIDER)[1]
+                        key,
+                        before,
+                        after
                     )
                 )
-        else:
+        elif pref == NORMAL:
             if isinstance(data[raw_key], dict):
                 accum = render_plain_rec(
                     data[raw_key],
-                    "{}{}.".format(string, str(raw_key)),
+                    "{}{}.".format(string, str(key)),
                     accum
                 )
     return accum
