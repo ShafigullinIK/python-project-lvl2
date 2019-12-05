@@ -3,10 +3,6 @@ import json
 import yaml
 
 
-def normalize_path(path_to_file):
-    return os.path.abspath(path_to_file)
-
-
 def load_from_file(path_to_file):
     file_type = path_to_file.split('.')[-1]
     load = load_from_json_file  # noqa Вариант по умолчанию, чтобы не падать из-за пустой функции
